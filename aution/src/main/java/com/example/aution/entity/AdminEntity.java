@@ -1,7 +1,6 @@
 package com.example.aution.entity;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -18,18 +17,15 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "admins")
-@Getter 
-@Setter @NoArgsConstructor @AllArgsConstructor @Builder
-public class AdminEntity{
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class AdminEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String username;
-
-    @Column(nullable = false)
-    private String password;
+    // username/password removed — now lives in PersonDetails
+    // so CustomUserDetailsService queries a single table for all roles
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id", referencedColumnName = "id", nullable = false)

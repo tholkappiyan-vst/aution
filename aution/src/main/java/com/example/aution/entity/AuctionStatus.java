@@ -1,12 +1,10 @@
 package com.example.aution.entity;
 
-
-    public enum AuctionStatus {
-    SCHEDULED, // Auction is created but waiting for startTime
-    ACTIVE,    // Bidding is currently open and live in Redis
-    PAUSED,    // Temporarily halted by an Admin or Auctioneer
-    COMPLETED, // Ended normally with a winner or failed to meet reserve
-    CANCELLED  // Aborted before or during execution
+public enum AuctionStatus {
+    SCHEDULED,  // Created but waiting for startTime
+    ACTIVE,     // Bidding is live — state also held in Redis
+    PAUSED,     // Temporarily halted by Admin or Auctioneer for triage
+    COMPLETED,  // Ended normally — covers both SOLD (reserve met) and
+                // NO_SALE (reserve not met). Check winningBidder != null to distinguish.
+    CANCELLED   // Aborted before or during execution
 }
-
-

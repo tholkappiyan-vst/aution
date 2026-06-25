@@ -1,27 +1,28 @@
 package com.example.aution.entity;
 
-
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
-@Table(name = "person_details")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Table(
+    name = "person_details",
+    indexes = {
+        @Index(name = "idx_person_email",    columnList = "email",    unique = true),
+        @Index(name = "idx_person_username", columnList = "username", unique = true)
+    }
+)
+@Getter 
+@Setter 
+@NoArgsConstructor 
+@AllArgsConstructor 
+@Builder
 public class PersonDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // --- Identity ---
     @Column(nullable = false)
     private String firstName;
 
@@ -32,4 +33,17 @@ public class PersonDetails {
     private String email;
 
     private String phoneNumber;
+
+    // --- Auth credentials (consolidated here so CustomUserDetailsService
+    //     only needs to query ONE table regardless of role) ---
+    @Column(unique = true, nullable = false)
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
+
+    // --- Role routing flag (used by CustomUserDetailsService) ---
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserType userType; // ADMIN, AUCTIONEER, BIDDER
 }

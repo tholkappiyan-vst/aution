@@ -1,9 +1,6 @@
 package com.example.aution.entity;
 
-
-
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -20,22 +17,14 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "bidders")
-@Getter
-@Setter 
-@NoArgsConstructor 
-@AllArgsConstructor 
-@Builder
-public class BidderEntity{
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class BidderEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String username;
-
-    @Column(nullable = false)
-    private String password;
-
+    
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id", referencedColumnName = "id", nullable = false)
