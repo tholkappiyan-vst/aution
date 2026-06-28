@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // ── Registration ──────────────────────────────────────────────────────────
+    // ── Registration (Auth) ───────────────────────────────────────────────────
 
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<ErrorResponse> handleDuplicate(
@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.CONFLICT, "CONFLICT", ex.getMessage(), request);
     }
 
-    // ── Auth ──────────────────────────────────────────────────────────────────
+    // ── Login ─────────────────────────────────────────────────────────────────
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentials(
@@ -77,7 +77,31 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuctionNotDeletableException.class)
     public ResponseEntity<ErrorResponse> handleAuctionNotDeletable(
             AuctionNotDeletableException ex, HttpServletRequest request) {
-        return build(HttpStatus.CONFLICT, "AUCTION_ALREADY_STARTED", ex.getMessage(), request);
+        return build(HttpStatus.CONFLICT, "AUCTION_ALREADY_STARTED",
+                ex.getMessage(), request);
+    }
+
+    // ── Bidder Registration ───────────────────────────────────────────────────
+
+    @ExceptionHandler(AlreadyRegisteredException.class)
+    public ResponseEntity<ErrorResponse> handleAlreadyRegistered(
+            AlreadyRegisteredException ex, HttpServletRequest request) {
+        return build(HttpStatus.CONFLICT, "ALREADY_REGISTERED",
+                ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(AuctionRegistrationNotAllowedException.class)
+    public ResponseEntity<ErrorResponse> handleRegistrationNotAllowed(
+            AuctionRegistrationNotAllowedException ex, HttpServletRequest request) {
+        return build(HttpStatus.BAD_REQUEST, "REGISTRATION_NOT_ALLOWED",
+                ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(RegistrationNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleRegistrationNotFound(
+            RegistrationNotFoundException ex, HttpServletRequest request) {
+        return build(HttpStatus.NOT_FOUND, "REGISTRATION_NOT_FOUND",
+                ex.getMessage(), request);
     }
 
     // ── Validation ────────────────────────────────────────────────────────────
