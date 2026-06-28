@@ -174,53 +174,12 @@ public class AuctionService {
                 .collect(Collectors.toList());
     }
 
-    // ── Scheduler: Auto-Start Auctions ───────────────────────────────────────
+    
+   
+    
 
-    /**
-     * Runs every 30 seconds. Finds all SCHEDULED auctions whose startTime
-     * has passed and flips their status to ACTIVE.
-     *
-     * fixedDelay = 30000ms — next run starts 30s after the previous one finishes.
-     * This prevents overlap if the DB query itself takes time.
-     */
-    @Scheduled(fixedDelay = 30000)
-    @Transactional
-    public void startScheduledAuctions() {
-        List<AuctionDetailsEntity> toStart = auctionRepository
-                .findByStatusAndStartTimeBefore(AuctionStatus.SCHEDULED, LocalDateTime.now());
-
-        if (!toStart.isEmpty()) {
-            toStart.forEach(auction -> {
-                auction.setStatus(AuctionStatus.ACTIVE);
-                log.info("Auction [id={}] automatically started at {}", 
-                        auction.getId(), LocalDateTime.now());
-            });
-            auctionRepository.saveAll(toStart);
-        }
-    }
-
-    // ── Scheduler: Auto-Complete Auctions ─────────────────────────────────────
-
-    /**
-     * Runs every 30 seconds. Finds all ACTIVE auctions whose endTime
-     * has passed and flips their status to COMPLETED.
-     */
-    @Scheduled(fixedDelay = 30000)
-    @Transactional
-    public void completeExpiredAuctions() {
-        List<AuctionDetailsEntity> toComplete = auctionRepository
-                .findByStatusAndEndTimeBefore(AuctionStatus.ACTIVE, LocalDateTime.now());
-
-        if (!toComplete.isEmpty()) {
-            toComplete.forEach(auction -> {
-                auction.setStatus(AuctionStatus.COMPLETED);
-                auction.setFinalizedAt(LocalDateTime.now());
-                log.info("Auction [id={}] automatically completed at {}",
-                        auction.getId(), LocalDateTime.now());
-            });
-            auctionRepository.saveAll(toComplete);
-        }
-    }
+    
+    
 
     // ── Mapper ────────────────────────────────────────────────────────────────
 
