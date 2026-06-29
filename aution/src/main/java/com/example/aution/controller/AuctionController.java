@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import com.example.aution.dto.auction.AuctionResponse;
 import com.example.aution.dto.auction.CreateAuctionRequest;
@@ -42,6 +43,7 @@ import lombok.RequiredArgsConstructor;
 public class AuctionController {
 
     private final AuctionService auctionService;
+    private final RedisTemplate<String, String> redisTemplate;
 
     // ── Public Endpoints (no JWT) ─────────────────────────────────────────────
 
@@ -99,4 +101,11 @@ public class AuctionController {
         auctionService.deleteAuction(id, userDetails.getUsername());
         return ResponseEntity.noContent().build(); // 204 No Content
     }
+
+    @GetMapping("/redis/ping")
+public ResponseEntity<String> ping() {
+    redisTemplate.opsForValue().set("ping", "pong");
+    String result = redisTemplate.opsForValue().get("ping");
+    return ResponseEntity.ok("Redis says: " + result);
+}
 }

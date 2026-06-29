@@ -49,7 +49,9 @@ public class SecurityConfig {
         http
             // Disable CSRF — stateless REST APIs don't use session cookies
             .csrf(AbstractHttpConfigurer::disable)
-
+             .headers(headers -> headers
+        .frameOptions(frame -> frame.disable())
+        )
             // Define route-level access rules
             .authorizeHttpRequests(auth -> auth
 
@@ -64,7 +66,8 @@ public class SecurityConfig {
 
                 // ── Public endpoints (no JWT required) ──────────────────────
                 .requestMatchers("/auth/register", "/auth/login").permitAll()
-
+                .requestMatchers("/redis/ping").permitAll() 
+                .requestMatchers("/ws/**", "/ws/info/**").permitAll()
                 // Public read-only auction/item browsing (your requirement)
                 .requestMatchers(HttpMethod.GET, "/auctions/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/items/**").permitAll()

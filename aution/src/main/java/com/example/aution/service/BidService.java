@@ -216,6 +216,7 @@ public class BidService {
                     .reason("This auction is not currently active")
                     .auctionId(auctionId)
                     .yourBidAmount(bidAmount)
+                    .currentLeader("Auction not active")    // ← add this
                     .placedAt(LocalDateTime.now())
                     .build();
 
@@ -224,6 +225,8 @@ public class BidService {
                         .get(keyHighestBid(auctionId));
                 String increment = redisTemplate.opsForValue()
                         .get(keyIncrement(auctionId));
+                 String leader = redisTemplate.opsForValue()    // ← add this
+            .get(keyLeader(auctionId));  
 
                 yield BidResponse.builder()
                         .status("REJECTED")
@@ -233,6 +236,8 @@ public class BidService {
                         .auctionId(auctionId)
                         .yourBidAmount(bidAmount)
                         .currentHighestBid(new BigDecimal(currentBid))
+                        .currentLeader(leader != null && !leader.isEmpty()   // ← fix
+                    ? leader : "No bids yet")    
                         .placedAt(LocalDateTime.now())
                         .build();
             }
